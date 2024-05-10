@@ -39,13 +39,15 @@ public class LibertNameAPI {
     public static void applyName(Player p) {
         String name = LibertNameAPI.getName(p);
 
-        ArrayList<Team> teams = new ArrayList<>(p.getScoreboard().getTeams());
+        ArrayList<Team> teams = p.getScoreboard().getTeams().stream().filter(team -> team.hasEntry(p.getName())).collect(Collectors.toCollection(ArrayList::new));
 
-        String prefix = teams.stream().map(Team::getPrefix).collect(Collectors.joining(""));
-        String suffix = teams.stream().map(Team::getSuffix).collect(Collectors.joining(""));
-        ChatColor color = teams.get(teams.size()-1).getColor();
+        String prefix    = teams.stream().map(Team::getPrefix).collect(Collectors.joining(""));
+        String suffix    = teams.stream().map(Team::getSuffix).collect(Collectors.joining(""));
+        ChatColor color  = teams.get(teams.size()-1).getColor();
+        String finalName = color+prefix+ChatColor.stripColor(name)+suffix;
 
-        p.setPlayerListName(color+prefix+ChatColor.stripColor(name)+suffix);
+        p.setPlayerListName(finalName);
+        p.setDisplayName(finalName);
     }
 
     public static boolean removeName(String key) {
