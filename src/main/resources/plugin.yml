@@ -1,0 +1,8 @@
+name: LibertName
+version: '${project.version}'
+main: libert.saehyeon.libertname.LibertName
+api-version: '1.16'
+authors: [세현]
+description: 리버트 이름 표시
+commands:
+  리버트:
