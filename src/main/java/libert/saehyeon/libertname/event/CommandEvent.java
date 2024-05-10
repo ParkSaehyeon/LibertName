@@ -41,8 +41,13 @@ public class CommandEvent implements Listener {
             case "/w":
                 e.setCancelled(true);
 
+                if(args.length <= 2 || args[1].isEmpty()) {
+                    p.sendMessage("§c명령어 구문이 올바르지 않아요. (사용법: "+cmd+" [플레이어 이름] [말할 내용])");
+                    return;
+                }
+
                 String target  = args[0];
-                String content = ArrayUtil.toSliceString(args, 2);
+                String content = ArrayUtil.join(args," ", 2);
 
                 Player targetP = Bukkit.getPlayer(target);
 
@@ -50,7 +55,7 @@ public class CommandEvent implements Listener {
 
                     String from = LibertNameAPI.getName(p);
                     String to   = LibertNameAPI.getName(targetP);
-                    String message = "§6[ "+from+"§f → "+to+"§6 ]§f §f "+content;
+                    String message = "§6[ §f"+from+"§f → "+to+"§6 ]§f "+content;
 
                     p.sendMessage(message);
                     targetP.sendMessage(message);

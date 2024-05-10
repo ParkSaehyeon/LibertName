@@ -20,6 +20,14 @@ public class LibertNameAPI {
 
         if(str.length() == 36) {
             nameMap.put(str, name);
+
+            // UUID를 가진 플레이어가 서버에 있으면 이름 업데이트
+            Player target = Bukkit.getPlayer(UUID.fromString(str));
+
+            if(target != null) {
+                LibertNameAPI.applyName(target);
+            }
+
             save();
             return true;
         }
@@ -41,10 +49,14 @@ public class LibertNameAPI {
 
         ArrayList<Team> teams = p.getScoreboard().getTeams().stream().filter(team -> team.hasEntry(p.getName())).collect(Collectors.toCollection(ArrayList::new));
 
-        String prefix    = teams.stream().map(Team::getPrefix).collect(Collectors.joining(""));
-        String suffix    = teams.stream().map(Team::getSuffix).collect(Collectors.joining(""));
-        ChatColor color  = teams.get(teams.size()-1).getColor();
-        String finalName = color+prefix+ChatColor.stripColor(name)+suffix;
+        String finalName = name;
+
+        if(!teams.isEmpty()) {
+            String prefix    = teams.stream().map(Team::getPrefix).collect(Collectors.joining(""));
+            String suffix    = teams.stream().map(Team::getSuffix).collect(Collectors.joining(""));
+            ChatColor color  = teams.get(teams.size()-1).getColor();
+            finalName = color+prefix+ChatColor.stripColor(name)+suffix;
+        }
 
         p.setPlayerListName(finalName);
         p.setDisplayName(finalName);
