@@ -1,5 +1,6 @@
 package libert.saehyeon.libertname.event;
 
+import libert.saehyeon.libertname.LibertName;
 import libert.saehyeon.libertname.LibertNameAPI;
 import libert.saehyeon.libertname.util.ArrayUtil;
 import org.bukkit.Bukkit;
@@ -21,6 +22,12 @@ public class CommandEvent implements Listener {
         String[] args = e.getMessage().replace(cmd,"").split(" ");
 
         switch(cmd) {
+            case "/team":
+                Bukkit.getScheduler().runTaskLater(LibertName.ins, () -> {
+                    LibertNameAPI.applyNameAll();
+                },2);
+                break;
+
             case "/pl":
             case "/minecraft:plugins":
             case "/bukkit:plugins":

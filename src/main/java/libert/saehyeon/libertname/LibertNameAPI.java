@@ -4,9 +4,11 @@ import libert.saehyeon.libertname.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class LibertNameAPI {
     private static HashMap<String, String> nameMap = new HashMap<>();
@@ -37,8 +39,13 @@ public class LibertNameAPI {
     public static void applyName(Player p) {
         String name = LibertNameAPI.getName(p);
 
-        p.setPlayerListName(name);
-        p.setDisplayName(name);
+        ArrayList<Team> teams = new ArrayList<>(p.getScoreboard().getTeams());
+
+        String prefix = teams.stream().map(Team::getPrefix).collect(Collectors.joining(""));
+        String suffix = teams.stream().map(Team::getSuffix).collect(Collectors.joining(""));
+        ChatColor color = teams.get(teams.size()-1).getColor();
+
+        p.setPlayerListName(color+prefix+ChatColor.stripColor(name)+suffix);
     }
 
     public static boolean removeName(String key) {
@@ -69,6 +76,10 @@ public class LibertNameAPI {
         return nameMap.getOrDefault(uuid, "(알 수 없음)");
     }
 
+    public static void applyNameAll() {
+        Bukkit.getOnlinePlayers().forEach(LibertNameAPI::applyName);
+    }
+
     public static void load() {
         String root = LibertName.ins.getDataFolder()+"/";
 
@@ -90,6 +101,8 @@ public class LibertNameAPI {
                     nameAmount++;
                 }
             }
+
+            applyNameAll();
 
             log(nameAmount+"개의 이름을 불러왔습니다.");
 
